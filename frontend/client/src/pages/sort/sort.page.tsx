@@ -10,6 +10,7 @@ import { ColumnCreation, ColumnType } from "../../types/Columns";
 /* Components, services & etc. */
 import SortColumn from "../../components/sort-column/sort-column.component";
 import { updateAllStudentLabels, updateMovedStudentsLabels } from "./label-helpers";
+import { setStudentLocationTo } from "../../services/student/location.service";
 import { useProjectContext } from "../../services/project/project.provider";
 import { addStudentsLocations } from "./students-to-columns";
 import { useAuth } from "../../services/auth/auth.provider";
@@ -47,6 +48,9 @@ const Sort = () => {
         const newStudents = addStudentsLocations(ColumnCreation.Request)(+id!, students.map(wrapped => wrapped.student));
         setStudents(newStudents);
         updateAllStudentLabels(currentProject!.name, newStudents);
+        newStudents.forEach(
+            wrappedStudent => setStudentLocationTo(wrappedStudent.column, +id!, wrappedStudent.student.id)
+        )
     }
 
     return (
