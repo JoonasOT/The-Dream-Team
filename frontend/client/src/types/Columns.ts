@@ -1,4 +1,5 @@
 /* Types */
+import { Project } from "./Project";
 import { Student, StudentWithLocation } from "./Student";
 
 export enum ColumnType {
@@ -12,4 +13,4 @@ export const enum ColumnCreation {
     Request
 }
 
-export type StudentToColMapper = (students: Student[]) => StudentWithLocation[]
+export type StudentToColMapper = (projectId: Project["id"], students: Student[]) => StudentWithLocation[]
