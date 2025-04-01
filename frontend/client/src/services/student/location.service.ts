@@ -1,13 +1,9 @@
 /* Types */
-import { AuthToken } from "../../types/Auth";
 import { ColumnType } from "../../types/Columns";
-import { Label, LabelContent, LabelType } from "../../types/Label";
 import { Project } from "../../types/Project";
 import { Student, StudentStorageItem } from "../../types/Student";
 
 /* Components, services & etc. */
-import { callAPI, USE_SERVER } from "../api/api.service";
-import { defaultStudents } from "./default-students";
 import storage from "../storage/storage.service";
 
 // TODO: Get stuff from local storage
