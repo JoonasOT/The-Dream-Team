@@ -33,8 +33,9 @@ const Sort = () => {
     useEffect(() => {
         if (token === undefined) return;
 
-        getStudents(+id!, token)
-            .then(gotStudents => addStudentsLocations(ColumnCreation.Initial)(+id!, gotStudents))
+        const projectId = +id!;
+        getStudents(projectId, token)
+            .then(gotStudents => addStudentsLocations(ColumnCreation.Initial)(projectId, gotStudents))
             .then(setStudents);
     }, []);
 
@@ -45,12 +46,14 @@ const Sort = () => {
     }
 
     const handleTeamBuild = () => {
-        const newStudents = addStudentsLocations(ColumnCreation.Request)(+id!, students.map(wrapped => wrapped.student));
+        const projectId = +id!;
+        const oldUnwrappedStudents = students.map(wrapped => wrapped.student);
+
+        const newStudents = addStudentsLocations(ColumnCreation.Request)(projectId, oldUnwrappedStudents);
         setStudents(newStudents);
+
         updateAllStudentLabels(currentProject!.name, newStudents);
-        newStudents.forEach(
-            wrappedStudent => setStudentLocationTo(wrappedStudent.column, +id!, wrappedStudent.student.id)
-        )
+        newStudents.forEach(wrappedStudent => setStudentLocationTo(wrappedStudent.column, projectId, wrappedStudent.student.id));
     }
 
     return (
@@ -73,7 +76,7 @@ const Sort = () => {
                                     isDragging={isDragging}
                                     students={
                                         students
-                                            .filter((wrapped) => wrapped.column != null ? +wrapped.column === idx : 0)
+                                            .filter((wrapped) => +wrapped.column === idx)
                                             .map(wrapped => { return { student: wrapped.student, row: wrapped.row }})
                                     }
                                 />
