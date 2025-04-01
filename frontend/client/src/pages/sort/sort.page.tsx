@@ -9,7 +9,7 @@ import { ColumnCreation, ColumnType } from "../../types/Columns";
 
 /* Components, services & etc. */
 import SortColumn from "../../components/sort-column/sort-column.component";
-import { updateStudentsLabels } from "./label-updater";
+import { updateAllStudentLabels, updateMovedStudentsLabels } from "./label-updater";
 import { useProjectContext } from "../../services/project/project.provider";
 import { addStudentsLocations } from "./students-to-columns";
 import { useAuth } from "../../services/auth/auth.provider";
@@ -39,14 +39,14 @@ const Sort = () => {
 
     const onDragEnd = (event: DragEndEvent) => {
         setDragging(false);
-        updateStudentsLabels(currentProject!.name, event);
+        updateMovedStudentsLabels(currentProject!.name, event);
         handleDragEnd(students, setStudents)(event);
     }
 
     const handleTeamBuild = () => {
-        setStudents(
-            addStudentsLocations(ColumnCreation.Request)(students.map(wrapped => wrapped.student))
-        );
+        const newStudents = addStudentsLocations(ColumnCreation.Request)(students.map(wrapped => wrapped.student));
+        setStudents(newStudents);
+        updateAllStudentLabels(currentProject!.name, newStudents);
     }
 
     return (

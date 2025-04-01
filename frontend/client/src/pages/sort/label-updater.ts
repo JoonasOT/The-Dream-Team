@@ -4,10 +4,10 @@ import { DragEndEvent } from "@dnd-kit/core";
 /* Types */
 import { DragID } from "../../types/Dragging";
 import { LabelType } from "../../types/Label";
-import { Student } from "../../types/Student";
+import { Student, StudentWithLocation } from "../../types/Student";
 
 /* Components, services & etc. */
-import { addLabelIfMissing, removeLabelFromStudent } from "../../services/student/student.service";
+import { addLabelIfMissing, getStudentLabels, removeLabelFromStudent } from "../../services/student/student.service";
 
 // Just a utility function atm
 const columnIdToLabelType = (id: number): LabelType | undefined => {
@@ -23,7 +23,18 @@ export const markStudentAsApplied = (projectName: string, studentId: Student["id
     addLabelIfMissing(studentId, { isType: LabelType.Applied, contains: { content: projectName }});
 }
 
-export const updateStudentsLabels = (projectName: string, event: DragEndEvent): void => {
+const updateStudentSelectLabel = (projectName: string, studentId: Student["id"], oldColumn: LabelType | undefined, newColumn: LabelType | undefined): void => {
+    if (oldColumn === newColumn) return;
+    if (oldColumn !== LabelType.Selected && newColumn !== LabelType.Selected) return;
+
+    if (oldColumn === LabelType.Selected) {
+        removeLabelFromStudent(studentId, { isType: LabelType.Selected, contains: { content: projectName }});
+        return;
+    }
+    addLabelIfMissing(studentId, { isType: LabelType.Selected, contains: { content: projectName }});
+}
+
+export const updateMovedStudentsLabels = (projectName: string, event: DragEndEvent): void => {
     const { active, over } = event;
     
     if (!over) return;
@@ -32,13 +43,16 @@ export const updateStudentsLabels = (projectName: string, event: DragEndEvent): 
     const oldColumn = columnIdToLabelType(card.columnId);
     const newColumn = columnIdToLabelType((JSON.parse(over.id as string) as DragID).columnId);
 
-    if (oldColumn === newColumn) return;
-    if (oldColumn !== LabelType.Selected && newColumn !== LabelType.Selected) return;
+    updateStudentSelectLabel(projectName, card.cardId!, oldColumn, newColumn);
+}
 
-    if (oldColumn === LabelType.Selected) {
-        removeLabelFromStudent(card.cardId!, { isType: LabelType.Selected, contains: { content: projectName }});
-        console.log()
-        return;
-    }
-    addLabelIfMissing(card.cardId!, { isType: LabelType.Selected, contains: { content: projectName }});
+export const updateAllStudentLabels = (projectName: string, students: StudentWithLocation[]): void => {
+    students.forEach(wrappedStudent => {
+        const wasSelected = getStudentLabels(wrappedStudent.student.id, LabelType.Selected)
+                            .filter(label => label.content === projectName)
+                            .length > 0;
+        const isNowSelected = columnIdToLabelType(wrappedStudent.column);
+
+        updateStudentSelectLabel(projectName, wrappedStudent.student.id, wasSelected? LabelType.Selected : undefined, isNowSelected? LabelType.Selected : undefined);
+    })
 }
