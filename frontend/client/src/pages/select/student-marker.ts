@@ -3,7 +3,7 @@ import { AuthToken } from "../../types/Auth";
 import { LabelType } from "../../types/Label";
 import { Project } from "../../types/Project";
 import { Student } from "../../types/Student";
-import { markStudentAsApplied } from "../sort/label-updater";
+import { markStudentAsApplied } from "../sort/label-helpers";
 
 
 export default (token: AuthToken) => {

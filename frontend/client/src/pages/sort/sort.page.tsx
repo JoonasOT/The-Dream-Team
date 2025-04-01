@@ -9,7 +9,7 @@ import { ColumnCreation, ColumnType } from "../../types/Columns";
 
 /* Components, services & etc. */
 import SortColumn from "../../components/sort-column/sort-column.component";
-import { updateAllStudentLabels, updateMovedStudentsLabels } from "./label-updater";
+import { updateAllStudentLabels, updateMovedStudentsLabels } from "./label-helpers";
 import { useProjectContext } from "../../services/project/project.provider";
 import { addStudentsLocations } from "./students-to-columns";
 import { useAuth } from "../../services/auth/auth.provider";
@@ -33,7 +33,7 @@ const Sort = () => {
         if (token === undefined) return;
 
         getStudents(+id!, token)
-            .then(addStudentsLocations(ColumnCreation.Initial))
+            .then(gotStudents => addStudentsLocations(ColumnCreation.Initial)(+id!, gotStudents))
             .then(setStudents);
     }, []);
 
@@ -44,7 +44,7 @@ const Sort = () => {
     }
 
     const handleTeamBuild = () => {
-        const newStudents = addStudentsLocations(ColumnCreation.Request)(students.map(wrapped => wrapped.student));
+        const newStudents = addStudentsLocations(ColumnCreation.Request)(+id!, students.map(wrapped => wrapped.student));
         setStudents(newStudents);
         updateAllStudentLabels(currentProject!.name, newStudents);
     }
