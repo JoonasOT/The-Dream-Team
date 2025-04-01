@@ -1,14 +1,11 @@
 /* Types */
 import { Student, StudentWithColumn, StudentWithLocation } from "../../types/Student";
+import { ColumnCreation, StudentToColMapper } from "../../types/Columns";
+import { Project } from "../../types/Project";
 
 /* Components, services & etc. */
-import { checkStudentStatus, getStudentStatus } from "../../services/student/student.service";
-import { ColumnCreation, StudentToColMapper } from "../../types/Columns";
-
-type ColumnAdder = (student: Student, index?: number, array?: Student[]) => StudentWithColumn
-
-const columnInitializer = (student: Student): StudentWithColumn => { return { student, column: checkStudentStatus(student) }};
-const columnRequester = (student: Student): StudentWithColumn => { return { student, column: getStudentStatus(student) }};
+import { getStudentStatus } from "../../services/student/student.service";
+import { getStudentLocation } from "../../services/student/location.service";
 
 const createRowAdder = () => {
     const numPerCol: Array<number> = [0, 0, 0];
@@ -19,14 +16,24 @@ const createRowAdder = () => {
     }
 }
 
+const addInitialLocation = (projectId: Project["id"], students: Student[]): StudentWithLocation[] => {
+    return students.map(student => { return { student, column: getStudentLocation(projectId, student.id) } })
+                   .map(createRowAdder())
+}
+
+const addLocationBasedOnRequest = (projectId: Project["id"], students: Student[]): StudentWithLocation[] => {
+    // TODO: Update this function after figured out getStudentStatus' func. signature
+    projectId;
+    return students.map(student => { return { student, column: getStudentStatus(student) } })
+                   .map(createRowAdder())
+}
+
 export const addStudentsLocations = (usecase: ColumnCreation): StudentToColMapper => {
-    const locationAdder = (columnAdder: ColumnAdder) => (students: Student[]): StudentWithLocation[] => students.map(columnAdder).map(createRowAdder());
-    
     switch (usecase) {
         case ColumnCreation.Initial:
-            return locationAdder(columnInitializer);
+            return addInitialLocation;
         case ColumnCreation.Request:
-            return locationAdder(columnRequester);
+            return addLocationBasedOnRequest;
         default:
             throw new Error("Invalid column creation value!");
     }
