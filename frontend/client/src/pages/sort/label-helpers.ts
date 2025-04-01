@@ -7,7 +7,7 @@ import { LabelType } from "../../types/Label";
 import { Student, StudentWithLocation } from "../../types/Student";
 
 /* Components, services & etc. */
-import { addLabelIfMissing, getStudentLabels, removeLabelFromStudent } from "../../services/student/student.service";
+import { addLabelIfMissing, getStudentLabels, removeLabelFromStudent } from "../../services/student/label.service";
 
 // Just a utility function atm
 const columnIdToLabelType = (id: number): LabelType | undefined => {
