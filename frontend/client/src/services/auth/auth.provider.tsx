@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const setToken = (newToken?: AuthToken) => {
         _setToken(newToken);
-        // window.location.reload();
+        window.location.reload();
         if (newToken) {
             initML(newToken)
                 .then(() => console.log("[INIT ML]"))
