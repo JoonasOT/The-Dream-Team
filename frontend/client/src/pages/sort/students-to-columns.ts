@@ -8,13 +8,13 @@ import { getStudentStatus } from "../../services/student/student.service";
 import { getStudentLocation } from "../../services/student/location.service";
 
 const createRowAdder = () => {
-    const numPerCol: Array<number> = [0, 0, 0];
-    return (studentW: StudentWithColumn): StudentWithLocation => {
-        const row = numPerCol[studentW.column!];
-        numPerCol[studentW.column!]++;
-        return { ...studentW, row };
-    }
-}
+  const numPerCol: Array<number> = [0, 0, 0];
+  return (studentW: StudentWithColumn): StudentWithLocation => {
+    const row = numPerCol[studentW.column!];
+    numPerCol[studentW.column!]++;
+    return { ...studentW, row };
+  };
+};
 
 const addInitialLocation = (projectId: Project["id"], students: Student[]): StudentWithLocation[] => {
     return students.map(student => { return { student, column: getStudentLocation(projectId, student.id) } })

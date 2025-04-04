@@ -10,22 +10,24 @@ import { defaultStudents } from "./default-students";
 
 // TODO: Request student status (if in team or not etc.) from ML
 export const getStudentStatus = (student: Student): ColumnType => {
-    student;
+  student;
 
-    // Gets random column type:
-    const columnTypes = Object.keys(ColumnType)
-      .map(n => Number.parseInt(n))
-      .filter(n => !Number.isNaN(n));
+  // Gets random column type:
+  const columnTypes = Object.keys(ColumnType)
+    .map((n) => Number.parseInt(n))
+    .filter((n) => !Number.isNaN(n));
 
-    return columnTypes[Math.floor(Math.random() * columnTypes.length)];
-}
+  return columnTypes[Math.floor(Math.random() * columnTypes.length)];
+};
 
-export const getStudents = (projectID: Project["id"], token: AuthToken): Promise<Student[]> => {
-    
-    const errorHandler = (reason: any): Student[] => {
-        console.log("[GET STUDENTS ERROR] --- " + reason);
-        return [];
-    }
+export const getStudents = (
+  projectID: Project["id"],
+  token: AuthToken,
+): Promise<Student[]> => {
+  const errorHandler = (reason: any): Student[] => {
+    console.log("[GET STUDENTS ERROR] --- " + reason);
+    return [];
+  };
 
     return USE_SERVER ? callAPI<Student[]>(`/projects/${projectID}/students`, token).catch(errorHandler) : Promise.resolve(defaultStudents);
 }
