@@ -5,14 +5,14 @@ import { DndContext, DragEndEvent } from '@dnd-kit/core';
 
 /* Types */
 import { StudentWithLocation } from "../../types/Student";
-import { ColumnCreation, ColumnType } from "../../types/Columns";
+import { ColumnType } from "../../types/Columns";
 
 /* Components, services & etc. */
 import SortColumn from "../../components/sort-column/sort-column.component";
 import { updateAllStudentLabels, updateMovedStudentsLabels } from "./label-helpers";
 import { setStudentLocationTo } from "../../services/student/location.service";
 import { useProjectContext } from "../../services/project/project.provider";
-import { addStudentsLocations } from "./students-to-columns";
+import { addInitialStudentLocations, addStudentLocationsViaML } from "./students-to-columns";
 import { useAuth } from "../../services/auth/auth.provider";
 import { getStudents } from "../../services/student/student.service";
 import { handleDragEnd, parseDragIDs } from "./drag-helpers";
@@ -36,7 +36,7 @@ const Sort = () => {
 
         const projectId = +id!;
         getStudents(projectId, token)
-            .then(gotStudents => addStudentsLocations(ColumnCreation.Initial)(projectId, gotStudents))
+            .then(gotStudents => addInitialStudentLocations(projectId, gotStudents))
             .then(addScoreForStudents(projectId, token, setStudents));
     }, []);
 
@@ -53,11 +53,11 @@ const Sort = () => {
         handleDragEnd(students, setStudents)(dragging, target);
     }
 
-    const handleTeamBuild = () => {
+    const handleTeamBuild = async () => {
         const projectId = +id!;
         const oldUnwrappedStudents = students.map(wrapped => wrapped.student);
 
-        const newStudents = addStudentsLocations(ColumnCreation.Request)(projectId, oldUnwrappedStudents);
+        const newStudents = await addStudentLocationsViaML(projectId, oldUnwrappedStudents, token!);
         setStudents(newStudents);
 
         updateAllStudentLabels(currentProject!.name, newStudents);
