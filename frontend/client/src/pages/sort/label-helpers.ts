@@ -1,6 +1,3 @@
-/* Lib imports */
-import { DragEndEvent } from "@dnd-kit/core";
-
 /* Types */
 import { DragID } from "../../types/Dragging";
 import { LabelType } from "../../types/Label";
@@ -8,7 +5,6 @@ import { Student, StudentWithLocation } from "../../types/Student";
 
 /* Components, services & etc. */
 import { addLabelIfMissing, getStudentLabels, removeLabelFromStudent } from "../../services/student/label.service";
-import { parseDragIDs } from "./drag-helpers";
 
 // Just a utility function atm
 const columnIdToLabelType = (id: number): LabelType | undefined => {
@@ -35,10 +31,7 @@ const updateStudentSelectLabel = (projectName: string, studentId: Student["id"],
     addLabelIfMissing(studentId, { isType: LabelType.Selected, contains: { content: projectName }});
 }
 
-export const updateMovedStudentsLabels = (projectName: string, event: DragEndEvent): void => {
-    const { dragging, target } = parseDragIDs(event)
-    if (!target) return;
-
+export const updateMovedStudentsLabels = (projectName: string, dragging: DragID, target: DragID): void => {
     const oldColumn = columnIdToLabelType(dragging.columnId);
     const newColumn = columnIdToLabelType(target.columnId);
 

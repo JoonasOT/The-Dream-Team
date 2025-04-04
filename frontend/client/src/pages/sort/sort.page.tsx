@@ -15,7 +15,7 @@ import { useProjectContext } from "../../services/project/project.provider";
 import { addStudentsLocations } from "./students-to-columns";
 import { useAuth } from "../../services/auth/auth.provider";
 import { getStudents } from "../../services/student/student.service";
-import { handleDragEnd } from "./drag-helpers";
+import { handleDragEnd, parseDragIDs } from "./drag-helpers";
 import { sortFunc } from "./sorting";
 
 /* Styling */
@@ -41,8 +41,15 @@ const Sort = () => {
 
     const onDragEnd = (event: DragEndEvent) => {
         setDragging(false);
-        updateMovedStudentsLabels(currentProject!.name, event);
-        handleDragEnd(students, setStudents)(event);
+
+        const projectId = +id!;
+        const { dragging, target } = parseDragIDs(event)
+        if (!target) return;
+
+        // Update labels, student location and set the UI to match data
+        updateMovedStudentsLabels(currentProject!.name, dragging, target);
+        setStudentLocationTo(target.columnId, projectId, dragging.cardId!);
+        handleDragEnd(students, setStudents)(dragging, target);
     }
 
     const handleTeamBuild = () => {

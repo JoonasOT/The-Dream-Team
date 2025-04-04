@@ -8,11 +8,7 @@ import { StudentWithLocation } from "../../types/Student";
 // NOTE: This is basically dark magic and I don't wanna explain this ever. But this should work :)
 
 export const handleDragEnd = (students: StudentWithLocation[], setStudents: Function) => {
-    return (event: DragEndEvent) => {        
-        const {dragging, target} = parseDragIDs(event);
-        console.log(target)
-        if (target === undefined) return;
-
+    return (dragging: DragID, target: DragID) => {
         const card = students.filter((student) => student.student.id === dragging.cardId!)[0];
 
         setStudents(
