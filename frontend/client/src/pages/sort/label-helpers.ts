@@ -8,6 +8,7 @@ import { Student, StudentWithLocation } from "../../types/Student";
 
 /* Components, services & etc. */
 import { addLabelIfMissing, getStudentLabels, removeLabelFromStudent } from "../../services/student/label.service";
+import { parseDragIDs } from "./drag-helpers";
 
 // Just a utility function atm
 const columnIdToLabelType = (id: number): LabelType | undefined => {
@@ -35,15 +36,13 @@ const updateStudentSelectLabel = (projectName: string, studentId: Student["id"],
 }
 
 export const updateMovedStudentsLabels = (projectName: string, event: DragEndEvent): void => {
-    const { active, over } = event;
-    
-    if (!over) return;
+    const { dragging, target } = parseDragIDs(event)
+    if (!target) return;
 
-    const card = JSON.parse(active.id as string) as DragID;
-    const oldColumn = columnIdToLabelType(card.columnId);
-    const newColumn = columnIdToLabelType((JSON.parse(over.id as string) as DragID).columnId);
+    const oldColumn = columnIdToLabelType(dragging.columnId);
+    const newColumn = columnIdToLabelType(target.columnId);
 
-    updateStudentSelectLabel(projectName, card.cardId!, oldColumn, newColumn);
+    updateStudentSelectLabel(projectName, dragging.cardId!, oldColumn, newColumn);
 }
 
 export const updateAllStudentLabels = (projectName: string, students: StudentWithLocation[]): void => {
