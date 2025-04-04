@@ -49,7 +49,7 @@ const StudentCard = ({ student, columnId }: StudentCardProps) => {
             <span>
                 { student.name }
             </span>
-            <Score studentID={student.id}/>
+            <Score score={student.score}/>
         </CardHeader>
         <Divider />
         <CardBody className="card-body">

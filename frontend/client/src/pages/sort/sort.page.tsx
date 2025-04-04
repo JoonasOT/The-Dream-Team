@@ -20,6 +20,7 @@ import { sortFunc } from "./sorting";
 
 /* Styling */
 import "./sort.page.scss";
+import { addScoreForStudents } from "./score-helpers";
 
 
 const Sort = () => {
@@ -36,7 +37,7 @@ const Sort = () => {
         const projectId = +id!;
         getStudents(projectId, token)
             .then(gotStudents => addStudentsLocations(ColumnCreation.Initial)(projectId, gotStudents))
-            .then(setStudents);
+            .then(addScoreForStudents(projectId, token, setStudents));
     }, []);
 
     const onDragEnd = (event: DragEndEvent) => {

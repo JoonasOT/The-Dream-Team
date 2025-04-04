@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState, ReactNode } fr
 
 /* Types */
 import { AuthToken } from "../../types/Auth";
+import { createPredictions, initML } from "../score/score.service";
 
 type AuthProviderType = {
     isLoggedIn: boolean,
@@ -27,7 +28,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const setToken = (newToken?: AuthToken) => {
         _setToken(newToken);
-        window.location.reload();
+        // window.location.reload();
+        if (newToken) {
+            initML(newToken)
+                .then(() => console.log("[INIT ML]"))
+                .then(() => createPredictions(newToken).then(() => console.log("[CREATED PREDICTIONS]")).catch(console.log))
+                .catch(console.log);
+        }
     };
 
     useEffect(() => {
