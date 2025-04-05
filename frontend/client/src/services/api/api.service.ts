@@ -1,6 +1,6 @@
 import { AuthToken } from "../../types/Auth";
 
-const API_ENDPOINT = import.meta.env.API_ENDPOINT || "/api";
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || "/api";
 
 type HTTP_Methods = "GET" | "POST";
 
