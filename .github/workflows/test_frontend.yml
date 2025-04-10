@@ -7,7 +7,7 @@ on: # yamllint disable-line rule:truthy
       - frontend/**
 
 jobs:
-  test_backend:
+  test_frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -17,9 +17,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 23
-      
-      - name: Install npx
-        run: npm i -g npx
 
       - name: Install playwright
         working-directory: ./frontend/client
