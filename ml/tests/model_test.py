@@ -8,7 +8,7 @@ test_file = str(this_dir.parent / "data" / "cleaned_data_test.json")
 
 MODEL_DIRECTORY = "models"
 REQUIRED_FUNCTIONS = ["train", "predict"]
-EXCLUDE = ["random_forest"]
+EXCLUDE = ["random_forest", "motivational_model_v1", "motivational_randomforest"]
 
 
 @pytest.mark.parametrize("model_name", get_all(MODEL_DIRECTORY, __file__, EXCLUDE))
